@@ -1,0 +1,14 @@
+{
+  "name": "@qjs-sandbox/utils",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "build": "tsc --build",
+    "test": "npm run build && node --test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
