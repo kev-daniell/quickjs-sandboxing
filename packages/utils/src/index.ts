@@ -42,8 +42,6 @@ async function createSandboxedModule() {
         ctx.callFunction(fooFn, ctx.undefined)
         
         // Convert exports to plain JS object
-        
-
         return { 
             testFn: ctx.dump(testFn), 
             fooFn: ctx.dump(fooFn), 
