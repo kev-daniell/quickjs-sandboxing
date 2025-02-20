@@ -12,5 +12,13 @@ export class fooClass {
 }
 
 export const fooFn = () => {
-    console.log("foo function");
+    Array.prototype.toString = () => { console.log("Array.toString hijacked!"); return "wrong Array.toString output";}
+    const arr: Array<number> = [1, 2, 3];
+    console.log(arr.toString());
+    console.log("foo function log");
+    return "foo function result";
+}
+
+export const fooAdd = (a: number, b: number) => {
+    return a + b;
 }
