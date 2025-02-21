@@ -1,19 +1,40 @@
 import { getQuickJS, QuickJSContext, QuickJSRuntime } from 'quickjs-emscripten';
+import deasync from 'deasync';
 
 let vmInstance: QuickJSRuntime | null = null;
 let contextInstance: QuickJSContext | null = null;
+let initPromise: Promise<void> | null = null;
 
-const initVM = async () => {
-    if (!vmInstance) {
-        const QuickJS = await getQuickJS();
-        vmInstance = QuickJS.newRuntime();
-        contextInstance = vmInstance.newContext();
+const initVM = () => {
+    if (!initPromise) {
+        initPromise = new Promise((resolve, reject) => {
+            getQuickJS().then((QuickJS) => {
+                vmInstance = QuickJS.newRuntime();
+                contextInstance = vmInstance.newContext();
+                resolve();
+            }).catch(reject);
+        });
     }
+
+    // Block execution until the promise is resolved
+    const waitForInit = () => {
+        const start = Date.now();
+        while (!vmInstance && Date.now() - start < 5000) {
+            // Busy-wait for up to 5 seconds
+            // Yield control to allow the promise to resolve
+            deasync.sleep(100);
+        }
+        if (!vmInstance) {
+            throw new Error('Failed to initialize QuickJS');
+        }
+    };
+
+    waitForInit();
     return { vm: vmInstance, ctx: contextInstance };
 };
 
-export const sandboxExports = async (exports: object) => {                                                             
-    const { ctx } = await initVM();                                                                                    
+export const sandboxExports = (exports: object) => {                                                             
+    const { ctx } = initVM();                                                                                    
     const wrappedExports: Record<string, any> = {};                                                                    
                                                                                                                        
     for (const [key, value] of Object.entries(exports)) {                                                              

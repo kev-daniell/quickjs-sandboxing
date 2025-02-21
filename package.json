@@ -13,10 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "deasync": "^0.1.30",
     "quickjs-emscripten": "^0.31.0",
     "typescript": "^5.7.3"
   },
   "devDependencies": {
+    "@types/deasync": "^0.1.5",
     "@types/node": "^22.13.1",
     "ts-node": "^10.9.2"
   }
